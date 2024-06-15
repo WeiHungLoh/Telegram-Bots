@@ -44,7 +44,7 @@ async def addtask(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             cur.execute("SELECT MAX(current_index) FROM trial WHERE user_id = %s", (user_id,))
             result = cur.fetchone()
 
-            if result:
+            if result[0]:
                 # If user exists, increment their current index
                 current_index = result[0]
                 new_index = current_index + 1
