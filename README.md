@@ -17,8 +17,12 @@ Before starting, ensure you have the following installed:
   
 ### Installation
 1. Clone the repositories:
+   '''bash
    cd path/to/your/directory
    git clone https://github.com/WeiHungLoh/Telegram-Bots
+   '''
 
-2. Install the dependencies:
+3. Install the dependencies:
+   '''bash
    pip3 install -r requirements.txt
+   '''
