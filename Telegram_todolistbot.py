@@ -16,7 +16,7 @@ db_conn = psycopg2.connect(
 def create_tables():
     with db_conn.cursor() as cur:
         cur.execute("""
-        CREATE TABLE IF NOT EXISTS trial (
+        CREATE TABLE IF NOT EXISTS tasks (
             current_index INTEGER NOT NULL,
             user_id BIGINT NOT NULL,
             description TEXT NOT NULL,
@@ -31,8 +31,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text("Welcome to the ToDoList Bot! \n\nThe commands are as follows: \n"
                                     "1) /add <task_desc> to add a task \n"
                                     "2) /remove <task_index> to remove a task \n"
-                                    "3) /removeall to remove all trial \n"
-                                    "4) /viewtrial to view current trial \n")
+                                    "3) /removeall to remove all tasks \n"
+                                    "4) /viewtasks to view current tasks \n")
 
 async def addtask(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None: 
     if context.args:
@@ -41,18 +41,18 @@ async def addtask(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
         with db_conn.cursor() as cur:
             # Since index is incremented once a task is added, MAX() will retrieve latest index
-            cur.execute("SELECT MAX(current_index) FROM trial WHERE user_id = %s", (user_id,))
+            cur.execute("SELECT MAX(current_index) FROM tasks WHERE user_id = %s", (user_id,))
             result = cur.fetchone()
 
             if result[0]:
                 # If user exists, increment their current index
                 current_index = result[0]
                 new_index = current_index + 1
-                cur.execute("INSERT INTO trial (current_index, user_id, description) VALUES (%s, %s, %s)", (new_index, user_id, description))
+                cur.execute("INSERT INTO tasks (current_index, user_id, description) VALUES (%s, %s, %s)", (new_index, user_id, description))
             else:
                 # If user does not exist, initialize their index at 1
                 new_index = 1
-                cur.execute("INSERT INTO trial (current_index, user_id, description) VALUES (%s, %s, %s)", (new_index, user_id, description))
+                cur.execute("INSERT INTO tasks (current_index, user_id, description) VALUES (%s, %s, %s)", (new_index, user_id, description))
             
             db_conn.commit()
         
@@ -69,24 +69,24 @@ async def removetask(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
             with db_conn.cursor() as cur:
                 # Remove a particular data from the user
                 cur.execute(
-                    "DELETE FROM trial WHERE user_id = %s AND current_index = %s RETURNING current_index",
+                    "DELETE FROM tasks WHERE user_id = %s AND current_index = %s RETURNING current_index",
                     (user_id, task_id)
                 )
                 result = cur.fetchone()
                 if result:
                     cur.execute(
-                        "SELECT current_index, description FROM trial WHERE user_id = %s ORDER BY current_index",
+                        "SELECT current_index, description FROM tasks WHERE user_id = %s ORDER BY current_index",
                         (user_id,)
                     )
-                    trial = cur.fetchall()
+                    tasks = cur.fetchall()
                     # Remove all existing data from the user
-                    cur.execute("DELETE FROM trial WHERE user_id = %s", (user_id,))
+                    cur.execute("DELETE FROM tasks WHERE user_id = %s", (user_id,))
                     
                     # Re-order index of existing data from the user
                     new_index = 1
-                    for i, desc in trial:
+                    for i, desc in tasks:
                         cur.execute(
-                            "INSERT INTO trial (current_index, user_id, description) VALUES (%s, %s, %s)",
+                            "INSERT INTO tasks (current_index, user_id, description) VALUES (%s, %s, %s)",
                             (new_index, user_id, desc)
                         )
                         new_index += 1
@@ -104,7 +104,7 @@ async def removetask(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 async def removeall(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = update.message.from_user.id
     with db_conn.cursor() as cur:
-        cur.execute("DELETE FROM trial WHERE user_id = %s", (user_id,))
+        cur.execute("DELETE FROM tasks WHERE user_id = %s", (user_id,))
         db_conn.commit()
     
     await update.message.reply_text("All tasks have been cleared")
@@ -112,11 +112,11 @@ async def removeall(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 async def viewtasks(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = update.message.from_user.id
     with db_conn.cursor() as cur:
-        cur.execute("SELECT current_index, description FROM trial WHERE user_id = %s ORDER BY current_index", (user_id,))
-        trial = cur.fetchall()
+        cur.execute("SELECT current_index, description FROM tasks WHERE user_id = %s ORDER BY current_index", (user_id,))
+        tasks = cur.fetchall()
     
-    if trial:
-        response = '\n'.join([f"{i}. {desc}" for i, desc in trial])
+    if tasks:
+        response = '\n'.join([f"{i}. {desc}" for i, desc in tasks])
         await update.message.reply_text(response)
     else:
         await update.message.reply_text("No tasks available")
