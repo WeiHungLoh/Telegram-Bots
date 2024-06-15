@@ -19,6 +19,7 @@ def create_tables():
         CREATE TABLE IF NOT EXISTS tasks (
             current_index INTEGER NOT NULL,
             user_id BIGINT NOT NULL,
+            user_name TEXT NOT NULL,
             description TEXT NOT NULL,
             PRIMARY KEY(current_index, user_id),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -37,6 +38,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 async def addtask(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None: 
     if context.args:
         user_id = update.message.from_user.id
+        user_name = update.message.from_user.username
         description = " ".join(context.args)
 
         with db_conn.cursor() as cur:
@@ -48,11 +50,11 @@ async def addtask(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                 # If user exists, increment their current index
                 current_index = result[0]
                 new_index = current_index + 1
-                cur.execute("INSERT INTO tasks (current_index, user_id, description) VALUES (%s, %s, %s)", (new_index, user_id, description))
+                cur.execute("INSERT INTO tasks (current_index, user_id, user_name, description) VALUES (%s, %s, %s, %s)", (new_index, user_id, user_name, description))
             else:
                 # If user does not exist, initialize their index at 1
                 new_index = 1
-                cur.execute("INSERT INTO tasks (current_index, user_id, description) VALUES (%s, %s, %s)", (new_index, user_id, description))
+                cur.execute("INSERT INTO tasks (current_index, user_id, user_name, description) VALUES (%s, %s, %s, %s)", (new_index, user_id, user_name, description))
             
             db_conn.commit()
         
@@ -65,6 +67,7 @@ async def removetask(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
         try:
             task_id = int(context.args[0])
             user_id = update.message.from_user.id
+            user_name = update.message.from_user.username
             
             with db_conn.cursor() as cur:
                 # Remove a particular data from the user
@@ -86,8 +89,8 @@ async def removetask(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
                     new_index = 1
                     for i, desc in tasks:
                         cur.execute(
-                            "INSERT INTO tasks (current_index, user_id, description) VALUES (%s, %s, %s)",
-                            (new_index, user_id, desc)
+                            "INSERT INTO tasks (current_index, user_id, user_name, description) VALUES (%s, %s, %s, %s)",
+                            (new_index, user_id, user_name, desc)
                         )
                         new_index += 1
                                
