@@ -1,4 +1,4 @@
-# Telegram-Bots
+# Telegram Bots
 
 This repository contains Python scripts for multiple Telegram bots with different functionalities, including a To-Do List bot, Weather bot, and User Info bot.
 Each bot has specific features and can be set up independently.
