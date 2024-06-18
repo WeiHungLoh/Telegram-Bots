@@ -38,7 +38,7 @@ Open your terminal and go to the directory you want to clone into.
 3. Save the API key generated
 
 ### Configuration
-Before running these bots, you have to "replace bot_token" and "api_key" with your actual token and API keys.
+Before running these bots, you have to replace "bot_token" and "api_key" with your actual token and API keys.
 
 ### Note
 When accessing the hyperlinks above, right-click on the link and select "Open in a new tab" to avoid disruptions.
