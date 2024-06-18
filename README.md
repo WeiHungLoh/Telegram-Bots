@@ -1,7 +1,7 @@
 # Telegram Bots
 
 This repository contains Python scripts for multiple Telegram bots with different functionalities, including a To-Do List bot, Weather bot, and User Info bot.
-Each bot has specific features and can be set up independently. When accessing 
+Each bot has specific features and can be set up independently. When accessing the hyperlinks below, right-click on the link and select "Open in a new tab" to avoid disruptions.
 
 You may interact with the original bots here:
 - [To-Do List Bot](https://t.me/ToDoListxBot)
@@ -39,6 +39,3 @@ Open your terminal and go to the directory you want to clone into.
 
 ### Configuration
 Before running these bots, you have to replace "bot_token" and "api_key" with your actual token and API keys.
-
-### Note
-When accessing the hyperlinks above, right-click on the link and select "Open in a new tab" to avoid disruptions.
