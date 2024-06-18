@@ -28,7 +28,7 @@ Open your terminal and go to the directory you want to clone into.
    pip3 install -r requirements.txt
    ```
 ### Creating a Telegram Bot and Retrieving Token
-1. Click [BotFather](https://t.me/BotFather)
+1. Click <a href="https://t.me/BotFather" target="_blank">here</a>
 2. Use the command "/newbot" to create a new bot. Follow the instructions to choose a name and username for the bot
 3. Save the bot token generated
 
