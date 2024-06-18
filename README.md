@@ -16,6 +16,7 @@ Before starting, ensure you have the following installed:
 - Pip3 (python package installer)
   
 ### Installation
+Open your terminal and go to the directory you want to clone into.
 1. Clone the repositories:
    ```bash
    cd path/to/your/directory
@@ -26,3 +27,15 @@ Before starting, ensure you have the following installed:
    ```bash
    pip3 install -r requirements.txt
    ```
+### Creating a Telegram Bot and Retrieving Token
+1. Click [BotFather](https://t.me/BotFather)
+2. Use the command "/newbot" to create a new bot. Follow the instructions to choose a name and username for the bot
+3. Save the bot token generated
+
+### Retrieving OpenWeatherMap API Key
+1. Go to [OpenWeatherMap](https://openweathermap.org/)
+2. Create a new account if you don't have one, then click on "My API keys" under your username dropdown
+3. Save the API key generated
+
+### Configuration
+Before running these bots, you have to "replace bot_token" and "api_key" with your actual token and API keys.
