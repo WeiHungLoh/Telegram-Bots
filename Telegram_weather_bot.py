@@ -1,9 +1,13 @@
+import os
+from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 import requests
 
-api_key = "REPLACE_WITH_YOUR_API_KEY"
-bot_token = "REPLACE_WITH_YOUR_TELEGRAM_BOT_TOKEN"
+load_dotenv()
+
+api_key = os.getenv("WEATHER_API_KEY")
+bot_token = os.getenv("BOT_TOKEN")
 
 # List down the cities available
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
